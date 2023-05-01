@@ -16,6 +16,7 @@ from datetime import datetime
 from liiklus_const import *
 
 # Settings
+APPNAME = "Liiklus"
 LANG = EST # or ENG
 MODEL_FILE = './models/yolov8l.pt'
 CONF_TH = 0.6
@@ -24,7 +25,8 @@ HEIGHT = 720
 
 is_active = True # while loop
 
-classNames = ["person", "bicycle", "car", "motorbike", "aeroplane", "bus", "train", "truck", "boat",
+# All model class names
+class_names = ["person", "bicycle", "car", "motorbike", "aeroplane", "bus", "train", "truck", "boat",
               "traffic light", "fire hydrant", "stop sign", "parking meter", "bench", "bird", "cat",
               "dog", "horse", "sheep", "cow", "elephant", "bear", "zebra", "giraffe", "backpack", "umbrella",
               "handbag", "tie", "suitcase", "frisbee", "skis", "snowboard", "sports ball", "kite", "baseball bat",
@@ -35,6 +37,19 @@ classNames = ["person", "bicycle", "car", "motorbike", "aeroplane", "bus", "trai
               "microwave", "oven", "toaster", "sink", "refrigerator", "book", "clock", "vase", "scissors",
               "teddy bear", "hair drier", "toothbrush"
               ]
+
+detect_names = [ "person", "bicycle", "car",
+                 "motorbike", "bus", "truck",
+                 "dog", "horse", "cat",
+                 "bird"]
+
+colors = [(199,55,255), (56,56,255), (134,219,61),
+          (168,153,44),(151,157,255), (52,147,26),
+          (31,112,255), (29,178,255), (49,210,207),
+          (10,249,72), (23,204,146)]
+
+counter_line_l = [0, 0, 0, 0]
+counter_line_r = [0, 0, 0, 0]
 
 
 def main(argv):
@@ -75,16 +90,23 @@ def main(argv):
           w, h = x2-x1, y2-y1
 
           conf = math.ceil((box.conf[0]*100))/100 # round
-          cv2.rectangle(frame, (x1,y1), (x2,y2),(0,0,255), 3)
           class_id = int(box.cls[0])
           class_name = model.names[class_id]
-          cvzone.putTextRect(frame, f'{class_name}{conf}', (max(0,x1), max(30, y1)) )
+
+          if class_name in detect_names:
+            color_index = detect_names.index(class_name)
+            cv2.rectangle(frame, (x1,y1), (x2,y2), colors[color_index], 3)
+            cvzone.putTextRect(frame, 
+                               f'{class_name}:{conf}',
+                               (max(0,x1)+8, max(30, y1)-8),
+                               colorB=colors[color_index]
+                               )
 
     else:
        print("Bad cap")
 
     # Display video
-    cv2.imshow("Webcam", frame)
+    cv2.imshow(APPNAME, frame)
     
     # Exit window
     c = cv2.waitKey(1)
