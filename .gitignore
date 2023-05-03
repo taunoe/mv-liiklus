@@ -1,4 +1,5 @@
 data/testvideo.mov
+data/yksauto.mov
 
 models/yolov8l.pt
 models/yolov8m.pt
