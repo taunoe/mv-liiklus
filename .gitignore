@@ -1,3 +1,10 @@
+data/testvideo.mov
+
+models/yolov8l.pt
+models/yolov8m.pt
+models/yolov8n.pt
+models/yolov8s.pt
+models/yolov8x.pt
 
 # Environments
 .env
